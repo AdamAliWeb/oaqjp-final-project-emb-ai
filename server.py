@@ -9,17 +9,20 @@ def sent_detector():
 
     response = emotion_detector(text_to_analyze)
 
-    dominant_emotion = response["dominant_emotion"]
-    del response["dominant_emotion"]
+    if response["dominant_emotion"] is None:
+        return "Invalid text! Please try again!"
+    else:
+        dominant_emotion = response["dominant_emotion"]
+        del response["dominant_emotion"]
 
-    message = "For the given statement, the system response is "
+        message = "For the given statement, the system response is "
 
-    for key, value in response.items():
-        message += f"'{key}': {value}, "
+        for key, value in response.items():
+            message += f"'{key}': {value}, "
 
-    message = f"{message[0:-2]}. The dominant emotion is {dominant_emotion}."
+        message = f"{message[0:-2]}. The dominant emotion is {dominant_emotion}."
 
-    return message
+        return message
 
 @app.route("/")
 def render_index_page():

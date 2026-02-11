@@ -8,20 +8,27 @@ def emotion_detector(text_to_analyse):
     response = requests.post(url, json=myobj, headers=header)
 
     formatted_response = json.loads(response.text)
+    emotion_scores = "Something went wrong! Please try again."
 
-    emotion_scores = formatted_response["emotionPredictions"][0]["emotion"]
-    highest_score = 0
-    dominant_emotion = ""
+    if response.status_code == 200:
+        emotion_scores = formatted_response["emotionPredictions"][0]["emotion"]
+        highest_score = 0
+        dominant_emotion = ""
 
-    for key, value in emotion_scores.items():
-        if value > highest_score:
-            dominant_emotion = key
-            highest_score = value
+        for key, value in emotion_scores.items():
+            if value > highest_score:
+                dominant_emotion = key
+                highest_score = value
 
-    emotion_scores["dominant_emotion"] = dominant_emotion
+        emotion_scores["dominant_emotion"] = dominant_emotion
+    elif response.status_code == 400:
+        emotion_scores = {
+            "anger": None,
+            "disgust": None, 
+            "fear": None, 
+            "joy": None, 
+            "sadness": None, 
+            "dominant_emotion": None
+        }
 
     return emotion_scores
-
-# from emotion_detection import emotion_detector
-
-# emotion_detector("I love this new technology.")
